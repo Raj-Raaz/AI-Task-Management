@@ -1,4 +1,4 @@
-from sqlalchemy import create_engine,column,Integer,String
+from sqlalchemy import create_engine,Column,Integer,String
 from sqlalchemy.orm import DeclarativeBase, sessionmaker
 
 DATABASE_URL = "sqlite:///todos.db"
@@ -11,13 +11,13 @@ class Base(DeclarativeBase):
 
 class Todo(Base):
     __tablename__="todos"
-    id = column(Integer,primary_key=True,autoincrement=True)
-    title = column(String(200), nullable=False)
-    discription = column(String(200), default="")
-    status =  column(String(20), default = "Pending")
-    priority = column(String(20), default = "Medium")
-    due_date = column(String(20),default="")
-    created_at = column(String(20),nullable=False)
+    id = Column(Integer,primary_key=True,autoincrement=True)
+    title = Column(String(200), nullable=False)
+    description = Column(String(200), default="")
+    status =  Column(String(20), default = "Pending")
+    priority = Column(String(20), default = "Medium")
+    due_date = Column(String(20),default="")
+    created_at = Column(String(20),nullable=False)
 
     def to_dict(self) -> dict:
         return{

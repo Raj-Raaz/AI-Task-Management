@@ -8,7 +8,6 @@ from database import init_db
 load_dotenv()
 init_db()
 
-## agent = llm, tools, system_prompt, user
 
 llm = ChatGroq(model="openai/gpt-oss-20b")
 
@@ -35,9 +34,9 @@ Guidelines:
 Status values:   pending | in_progress | done
 
 Use Status Icons with staus value: 
-  pending - 🕣 Pnding 
-  in_progress - ⏳ In Progress
-  done - ✅ Done
+  pending - Pending 
+  in_progress - In Progress
+  done - Done
 Priority values: low | medium | high
 """
 
@@ -61,6 +60,3 @@ def call_agent(query: str):
 
     answer = res["messages"][-1].content
     print(answer)
-
-
-# call_agent("List my all the task ?")

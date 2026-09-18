@@ -1,5 +1,5 @@
 from langchain.tools import tool
-from database import LocalSession, Todo
+from database import LocalSesssion, Todo
 from datetime import datetime
 
 
@@ -22,7 +22,7 @@ def create_todo(
     if priority.lower() in ["low", "high", "medium"]:
         task_priority = priority
 
-    with LocalSession() as session:
+    with LocalSesssion() as session:
         todo = Todo(
             title=title,
             description=description,
@@ -52,7 +52,7 @@ def list_todos(status: str = "all", priority: str = "all"):
         priority: 'low', 'medium', 'high', or 'all'
     """
 
-    with LocalSession() as sesion:
+    with LocalSesssion() as sesion:
         query = sesion.query(Todo)
 
         if status != "all":
@@ -92,7 +92,7 @@ def update_todos(
         due_date:    New due date e.g. '2025-12-25'
     """
 
-    with LocalSession() as session:
+    with LocalSesssion() as session:
         todo = session.get(Todo, todo_id)
         if not todo:
             return f"Todo with id {todo_id} not found"
@@ -127,7 +127,7 @@ def delete_todo(todo_id: int):
     Args:
         todo_id: ID of the todo to delete (required)
     """
-    with LocalSession() as session:
+    with LocalSesssion() as session:
         todo = session.get(Todo, todo_id)
         if not todo:
             return f"Todo with id {todo_id} not found"
