@@ -102,7 +102,7 @@ def update_todos(
         if description:
             todo.description = description
         if status:
-            todo.status = status
+            todo.status = status 
 
         if priority:
             todo.priority = priority
