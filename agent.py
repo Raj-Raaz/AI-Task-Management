@@ -4,13 +4,12 @@ from langchain_groq import ChatGroq
 from tools import *
 from dotenv import load_dotenv
 from database import init_db
-import os
 
 load_dotenv()
 init_db()
 
-MODEL= os.getenv("MODEL")
-llm = ChatGroq(model=MODEL)
+
+llm = ChatGroq(model="openai/gpt-oss-20b")
 
 all_tools = [create_todo, list_todos, update_todos, delete_todo]
 
