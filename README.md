@@ -1,142 +1,17 @@
 # AI Task Manager
 
-An AI-powered task manager that lets you manage your todos using natural language.
+A simple AI-powered task manager that lets you manage todos using natural language.
 
-Instead of filling out forms or remembering different commands, you can simply tell the assistant what you want to do. The AI agent understands the request and uses the appropriate tool to create, view, update, or delete tasks.
-
-The project uses LangChain for the agent workflow, Groq for the language model, Streamlit for the interface, and SQLite for storing tasks.
+Instead of using separate forms or commands, you can simply tell the AI what you want to do. The agent then uses the appropriate tool to create, view, update, or delete tasks.
 
 ## Features
 
-* Create new tasks using natural language
-* View all tasks
-* Filter tasks by status
-* Filter tasks by priority
-* Update existing tasks
+* Create tasks
+* List and filter tasks
+* Update tasks
 * Delete tasks
-* Set task priority
-* Add descriptions and due dates
-* Maintain conversation history during the session
-* Store tasks locally in an SQLite database
-
-The available task statuses are:
-
-* `pending`
-* `in_progress`
-* `done`
-
-Task priorities are:
-
-* `low`
-* `medium`
-* `high`
-
-## How It Works
-
-The application has three main parts:
-
-### 1. Streamlit Interface
-
-The user interacts with the application through a simple chat interface.
-
-For example:
-
-```text
-Create a task to complete my Python project with high priority.
-```
-
-The request is sent to the AI agent, and the agent decides which tool should be used.
-
-The Streamlit application maintains the chat messages and sends the user's request to the agent.
-
-### 2. AI Agent
-
-The agent is created using LangChain and uses a Groq-hosted language model.
-
-The project currently uses:
-
-```text
-openai/gpt-oss-20b
-```
-
-The agent has access to four tools:
-
-* `create_todo`
-* `list_todos`
-* `update_todos`
-* `delete_todo`
-
-These tools allow the model to interact with the task database.
-The system prompt also defines how common requests should be interpreted. For example:
-
-```text
-"mark as done"      -> status = done
-"start working on"  -> status = in_progress
-"show pending"      -> status = pending
-"high priority"     -> priority = high
-```
-
-This makes the interaction more natural for the user.
-
-### 3. SQLite Database
-
-Tasks are stored in a local SQLite database called:
-
-```text
-todos.db
-```
-
-The database contains a `todos` table with fields such as:
-
-* ID
-* Title
-* Description
-* Status
-* Priority
-* Due Date
-* Created At
-
-SQLAlchemy is used to define the database model and handle database operations.
-
-## Project Structure
-
-```text
-AI-Task-Manager/
-│
-├── agent.py
-├── app.py
-├── database.py
-├── tools.py
-├── todos.db
-├── requirements.txt
-├── .env
-└── README.md
-```
-
-### `app.py`
-
-Contains the Streamlit application and chat interface.
-
-### `agent.py`
-
-Creates and configures the AI agent, connects the language model, and registers the task-management tools.
-
-### `tools.py`
-
-Contains the functions used by the AI agent to interact with the database.
-
-The four main tools are:
-
-```text
-create_todo()
-list_todos()
-update_todos()
-delete_todo()
-```
-
-### `database.py`
-
-Defines the SQLite database connection and the `Todo` model using SQLAlchemy.
+* Set priority and due dates
+* Natural language interaction
 
 ## Tech Stack
 
@@ -147,233 +22,59 @@ Defines the SQLite database connection and the `Todo` model using SQLAlchemy.
 * Streamlit
 * SQLAlchemy
 * SQLite
-* Python-dotenv
 
-## Installation
+## How It Works
 
-Clone the repository:
+```text
+User
+  ↓
+Streamlit Chat UI
+  ↓
+AI Agent
+  ↓
+Task Tools
+  ↓
+SQLite Database
+```
+
+The agent has four main tools:
+
+```text
+create_todo()
+list_todos()
+update_todos()
+delete_todo()
+```
+
+## Run Locally
 
 ```bash
 git clone https://github.com/your-username/AI-Task-Manager.git
-```
-
-Move into the project directory:
-
-```bash
 cd AI-Task-Manager
-```
 
-Create a virtual environment:
-
-```bash
-python -m venv venv
-```
-
-Activate it on Windows:
-
-```bash
-venv\Scripts\activate
-```
-
-Install the required packages:
-
-```bash
 pip install -r requirements.txt
+streamlit run app.py
 ```
 
-## Environment Variables
-
-Create a `.env` file in the project directory.
-
-Add your Groq API key:
+Add your Groq API key to `.env`:
 
 ```env
 GROQ_API_KEY=your_api_key_here
 ```
 
-The application loads environment variables using `python-dotenv`.
-
-## Run the Application
-
-Start the Streamlit application:
-
-```bash
-streamlit run app.py
-```
-
-The application will open in your browser.
-
-## Example Usage
-
-You can interact with the task manager using normal language.
-
-### Create a task
+## Example
 
 ```text
-Create a task to finish my ML project.
-```
-
-### Create a high-priority task
-
-```text
-Add a high priority task to prepare for my interview.
-```
-
-### View tasks
-
-```text
-Show me all my tasks.
-```
-
-### Filter tasks
-
-```text
-Show my pending tasks.
-```
-
-```text
-Show my high priority tasks.
-```
-
-### Update a task
-
-```text
-Mark task 3 as done.
-```
-
-```text
-Start working on task 5.
-```
-
-### Delete a task
-
-```text
-Delete task 4.
-```
-
-The agent converts these natural-language requests into calls to the appropriate task-management tools.
-
-## Agent Workflow
-
-The basic workflow looks like this:
-
-```text
-User
-  |
-  v
-Streamlit Chat Interface
-  |
-  v
-LangChain AI Agent
-  |
-  +----> Create Todo
-  |
-  +----> List / Filter Todos
-  |
-  +----> Update Todo
-  |
-  +----> Delete Todo
-  |
-  v
-SQLite Database
-```
-
-The agent decides which tool to call based on the user's request.
-
-For example:
-
-```text
-User:
 "Create a high priority task to complete my resume."
 
-        ↓
+"Show my pending tasks."
 
-AI Agent
+"Mark task 3 as done."
 
-        ↓
-
-create_todo()
-
-        ↓
-
-SQLite Database
-
-        ↓
-
-Task Created
+"Delete task 5."
 ```
-
-## Database Operations
-
-### Creating a task
-
-The `create_todo` tool accepts a title, description, priority, and optional due date before saving the task to the database.
-
-### Listing tasks
-
-Tasks can be retrieved and filtered using status and priority.
-
-For example:
-
-```text
-Show pending tasks
-```
-
-can be interpreted as a request to filter tasks where the status is `pending`.
-
-### Updating tasks
-
-Existing tasks can be updated using their ID. The tool supports changing:
-
-* Title
-* Description
-* Status
-* Priority
-* Due date
-
-### Deleting tasks
-
-Tasks can also be permanently deleted using their ID.
-
-## Why I Built This
-
-I built this project to understand how LLM-powered agents can interact with real applications instead of only generating text.
-
-The main idea was to connect an AI agent with actual tools and a database. This allows the model to take actions based on natural-language instructions.
-
-Through this project, I worked with:
-
-* AI agents
-* Tool calling
-* LangChain
-* LangGraph
-* LLM integration
-* Prompt engineering
-* Streamlit
-* SQLAlchemy
-* SQLite
-* Environment variables
-* Conversational interfaces
-
-## Future Improvements
-
-Some improvements I would like to add:
-
-* User authentication
-* Multiple users with separate task lists
-* Better date and time handling
-* Task search
-* Recurring tasks
-* Task reminders
-* Persistent conversation memory
-* Better task summaries
-* Deployment with a hosted database
-* More advanced agent workflows
 
 ## Author
 
 Raj
-
 GitHub: `Raj-Raaz`
-
-This project was built as a practical experiment with AI agents and tool-based application development.
